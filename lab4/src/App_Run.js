@@ -17,6 +17,9 @@ import Customers_Page from './Customers';
 import AddCus_Page from './CustomerAdd';
 import Logout_Page from './LogoutPage';
 import { NavigationContainer } from '@react-navigation/native';
+import EditCus_Page from './CustomerEdit';
+import CustomerDetail_Page from './CustomerDetail';
+import TransactionAdd_Page from './TransAdd';
 
 const Stack = createStackNavigator();
 
@@ -113,6 +116,10 @@ const TransactionsScreen = () => {
                 name="TransactionDetail"
                 component={DetailTrans_Page}
             />
+            <Stack.Screen
+                name='TransactionAdd'
+                component={TransactionAdd_Page}
+            />
 
         </Stack.Navigator>
     );
@@ -136,6 +143,15 @@ const CustomersScreen = () => {
             <Stack.Screen
                 name="AddCustomer"
                 component={AddCus_Page}
+            />
+            <Stack.Screen 
+                name='EditCustomer'
+                component={EditCus_Page}
+            />
+
+            <Stack.Screen
+                name='DetailCustomer'
+                component={CustomerDetail_Page}
             />
         </Stack.Navigator>
     );
@@ -178,6 +194,7 @@ function MyTabs() {
         </Tab.Navigator>
     )
 }
+
 function App_Run() {
     return (
         <NavigationContainer>

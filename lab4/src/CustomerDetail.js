@@ -8,7 +8,7 @@ import styles from './Style';
 
 import customer from './testdata/cusDetail';
 
-const CustomerDetail_Page = ({navigation}) => {
+const CustomerDetail_Page = ({ navigation }) => {
     const [data, setData] = useState([])
     //const data =  customer;
     const [isLoading, setIsLoading] = useState(false)
@@ -46,7 +46,7 @@ const CustomerDetail_Page = ({navigation}) => {
     }
     useEffect(() => {
         fetchData();
-    }, []) 
+    }, [])
 
     const TransactionDetailBox = (transaction, index) => {
         return (
@@ -56,27 +56,41 @@ const CustomerDetail_Page = ({navigation}) => {
                     <Text style={styles.itemTitle} > - {transaction.createdAt}</Text>
                 </View>
                 {
-                            transaction.services ? 
-                            transaction.services.map((service, i) => <serviceBox service={service} index={i}/>)
-                            : null
+                    transaction.services ?
+                        transaction.services.map((service, i) => {
+                            <View key={i}>
+                                <Text > - {service.name}</Text>
+                            </View>
+                        })
+                        : null
                 }
-                <Text style={styles.itemPrice}>{transaction.price}</Text>  
+                <Text style={styles.itemPrice}>{transaction.price}</Text>
             </View>
         );
     }
 
-    const serviceBox = (service, index) =>{
-        return(
-            <View key={index}>
-            <Text > - {service.name}</Text>
-        </View>
-        );
-    }
+    const handleDeleteCustomer = async () => {
+        await fetch(`https://kami-backend-5rs0.onrender.com/customers/${_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('NetWork response was not ok')
+                }
+                Alert.alert("Delete Succesfull!!!");
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            }).finally(() => navigation.navigate('Home'));
+    };
+
     return (
         <View>
             <Appbar.Header>
                 <Appbar.Content title={' <   '} onPress={() => navigation.goBack()} />
-                <Appbar.Content style={styles.itemValue} title={'...'} onPress={() => navigation.navigate('AppbarScreen', {screen: 'AppbarOption', params: {_id: _id, nameCus: data.name, phoneCus: data.phone}})} />
             </Appbar.Header>
 
             <View style={styles.itembox}>
@@ -113,7 +127,7 @@ const CustomerDetail_Page = ({navigation}) => {
                 <View>
                     <View>
                         {isLoading ?
-                            <Loading/> :
+                            <Loading /> :
                             data.transactions ? data.transactions.map((transaction, index) =>
                                 <TransactionDetailBox
                                     transaction={transaction}
@@ -123,6 +137,18 @@ const CustomerDetail_Page = ({navigation}) => {
                     </View>
                 </View>
             </View>
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={() => navigation.navigate('EditCustomer')}>
+                <Text style={styles.buttonTextStyle}>EDIT</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={handleDeleteCustomer}>
+                <Text style={styles.buttonTextStyle}>DELETE</Text>
+            </TouchableOpacity>
         </View>
     )
 }
