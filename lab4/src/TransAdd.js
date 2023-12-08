@@ -11,8 +11,7 @@ const TransactionAdd_Page = ({ navigation }) => {
     const [customerSelected, setCustomerSelected] = useState('None')
     const [customers, setCustomers] = useState([])
     const [customerID, setCustomerID] = useState('');
-
-    const [data, setData] = useState([]);
+    const [numService, setNumService] = useState(0);
 
     const [services, setServices] = useState([])
     const [serviceQuantity, SetServiceQuantity] = useState('');
@@ -60,7 +59,7 @@ const TransactionAdd_Page = ({ navigation }) => {
     useEffect(() => {
         fetchData();
     }, [])
-    const Item = ({ item }) => (
+    const CustomerListItem = ({ item }) => (
         <View>
             <Divider />
             <TouchableOpacity style={styles.itembox} onPress={() => {
@@ -79,35 +78,88 @@ const TransactionAdd_Page = ({ navigation }) => {
         </View>
     );
     const selectCustomerDialog = () => {
-        <View style={{ flex: 1 }}>
-            <Portal>
-                <Dialog visible={visible} onDismiss={hideDialog}>
-                    <Dialog.Content>
-                        <View>
-                            <TouchableOpacity style={styles.itembox} onPress={() => {
-                                setCustomerID('');
-                                setCustomerSelected('None');
-                                hideDialog;
-                            }}>
-                                <View style={styles.itemrow}>
-                                    <RadioButton
-                                        status={'checked'}
-                                    />
-                                    <Text style={styles.itemTitle}>Default</Text>
-                                </View>
-                            </TouchableOpacity>
+        return (
+            <View style={{ flex: 1 }}>
+                <Portal>
+                    <Dialog visible={visible} onDismiss={hideDialog}>
+                        <Dialog.Content>
+                            <View>
+                                <TouchableOpacity style={styles.itembox} onPress={() => {
+                                    setCustomerID('');
+                                    setCustomerSelected('None');
+                                    hideDialog;
+                                }}>
+                                    <View style={styles.itemrow}>
+                                        <RadioButton
+                                            status={'checked'}
+                                        />
+                                        <Text style={styles.itemTitle}>Default</Text>
+                                    </View>
+                                </TouchableOpacity>
 
-                        </View>
-                        <FlatList
-                            data={customers}
-                            renderItem={({ item }) => <Item item={item} />}
-                            keyExtractor={item => item._id}
-                        />
-                    </Dialog.Content>
+                            </View>
+                            <FlatList
+                                data={customers}
+                                renderItem={({ item }) => <CustomerListItem item={item} />}
+                                keyExtractor={item => item._id}
+                            />
+                        </Dialog.Content>
 
-                </Dialog>
-            </Portal>
-        </View>
+                    </Dialog>
+                </Portal>
+            </View>
+        );
+    }
+
+    const serviceListItem = (item) => {
+        const [checked, setChecked] = useState(false);
+        const [quantity, setQuantity] = useState(0);
+        const [servicePrice, setServicePrice] = useState(0);
+        const [newService, setNewService] = useState([]);
+        const [index,setIndex] = useState(-1);
+        const [isCreated,setIsCreated] = useState(false)
+
+   
+
+        return (
+            <View>
+                <RadioButton
+                    value={item.name}
+                    status={checked? 'checked' : 'unchecked'}
+                    onPress={checked?
+                        () =>{
+                            setChecked(false)
+                        }:()=>{
+                            setChecked(true)
+                        }
+                    }
+                />
+                {checked? 
+                <View>
+                <View style={styles.itemrow}>
+                    <TouchableOpacity style={styles.itembox} onPress={() =>{
+                         setQuantity(quantity-1);
+                         setServicePrice(quantity*item.price);
+                         }}>
+                        <Text style={{fontSize: 20, fontWeight: 'bold'}}> - </Text>
+                    </TouchableOpacity>
+                    
+                    <Text>{quantity}</Text>
+
+                    <TouchableOpacity style={styles.itembox} onPress={() => {
+                         setQuantity(quantity+1);
+                         setServicePrice(quantity*item.price);
+                         }}>
+                        <Text style={{fontSize: 20, fontWeight: 'bold'}}> + </Text>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <Text>Price: <Text style={styles.itemPrice}>{servicePrice}</Text></Text>
+                </View>
+                </View>
+                : null}
+            </View>
+        );
     }
 
     return (
@@ -125,7 +177,11 @@ const TransactionAdd_Page = ({ navigation }) => {
                     </View>
 
                     <View>
-
+                        <FlatList
+                            data={services}
+                            renderItem={({ item, index }) => <serviceListItem item={item} />}
+                            keyExtractor={item => item._id}
+                        />
                     </View>
                 </View>
             }
