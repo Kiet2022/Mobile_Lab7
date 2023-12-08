@@ -99,7 +99,7 @@ const EditCus_Page = ({ navigation }) => {
                     style={styles.buttonStyle}
                     activeOpacity={0.5}
                     onPress={handleUpdateCustomer}>
-                    <Text style={styles.buttonTextStyle}>UPDATE</Text>
+                    <Text style={styles.buttonTextStyle}>EDIT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.buttonStyle}

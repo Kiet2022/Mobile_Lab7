@@ -13,7 +13,9 @@ const CustomerDetail_Page = ({ navigation }) => {
     //const data =  customer;
     const [isLoading, setIsLoading] = useState(false)
     const [price, setPrice] = useState(0);
-    const [price_After_Discount, setPriceAfterDiscount] = useState(0);
+    const [visibleDialog, setVisibleDialog] = React.useState(false);      
+    const showDialog = () => setVisibleDialog(true);      
+    const hideDialog = () => setVisibleDialog(false);
 
     const route = useRoute();
     const { _id } = route.params;
@@ -86,7 +88,30 @@ const CustomerDetail_Page = ({ navigation }) => {
                 console.error('Error fetching data:', error);
             }).finally(() => navigation.navigate('Home'));
     };
+    const DeleteDialog = () => {
 
+      
+        return (
+      
+            <View>
+              <Button onPress={showDialog}>Show Dialog</Button>
+              <Portal>
+                <Dialog visible={visible} onDismiss={hideDialog}>
+                  <Dialog.Title>Alert</Dialog.Title>
+                  <Dialog.Content>
+                    <Text variant="bodyMedium">Are you sure want to Delete this customer?</Text>
+                  </Dialog.Content>
+                  <Dialog.Actions>
+                    <Button onPress={handleDeleteCustomer}>YES</Button>
+                  </Dialog.Actions>
+                  <Dialog.Actions>
+                    <Button onPress={hideDialog}>Done</Button>
+                  </Dialog.Actions>
+                </Dialog>
+              </Portal>
+            </View>
+        );
+      };
     return (
         <View>
             <Appbar.Header>
@@ -137,6 +162,7 @@ const CustomerDetail_Page = ({ navigation }) => {
                     </View>
                 </View>
             </View>
+            {visibleDialog? <DeleteDialog/> :null}
             <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
@@ -146,7 +172,7 @@ const CustomerDetail_Page = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                onPress={handleDeleteCustomer}>
+                onPress={showDialog}>
                 <Text style={styles.buttonTextStyle}>DELETE</Text>
             </TouchableOpacity>
         </View>

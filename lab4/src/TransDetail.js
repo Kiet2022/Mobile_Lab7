@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Appbar } from 'react-native-paper';
 import styles from './Style';
+
+import { Button, Dialog, Portal, Text } from 'react-native-paper';
 
 const DetailTrans_Page = ({ navigation }) => {
     const [data, setData] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [price, setPrice] = useState(0);
     const [price_After_Discount, setPriceAfterDiscount] = useState(0);
+    const [visibleDialog, setVisibleDialog] = useState(false);      
+    const showDialog = () => setVisibleDialog(true);      
+    const hideDialog = () => setVisibleDialog(false);
 
     const route = useRoute();
     const { _id } = route.params;
@@ -44,6 +49,49 @@ const DetailTrans_Page = ({ navigation }) => {
         fetchData();
     }, [])
 
+
+    const DeleteDialog = () => {
+
+      
+        return (
+      
+            <View>
+              <Portal>
+                <Dialog visible={visible} onDismiss={hideDialog}>
+                  <Dialog.Title>Alert</Dialog.Title>
+                  <Dialog.Content>
+                    <Text variant="bodyMedium">Are you sure want to cancel this transaction?</Text>
+                  </Dialog.Content>
+                  <Dialog.Actions>
+                    <Button onPress={handleDeleteTransaction}>YES</Button>
+                  </Dialog.Actions>
+                  <Dialog.Actions>
+                    <Button onPress={hideDialog}>Done</Button>
+                  </Dialog.Actions>
+                </Dialog>
+              </Portal>
+            </View>
+        );
+      };
+      
+
+    const handleDeleteTransaction = async () => {
+        await fetch(`https://kami-backend-5rs0.onrender.com/transactions/${_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('NetWork response was not ok')
+                }
+                Alert.alert("Delete Succesfull!!!");
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            }).finally(() => navigation.navigate('Home'));
+    };
 
 
     return (
@@ -119,7 +167,13 @@ const DetailTrans_Page = ({ navigation }) => {
                     <Text style={styles.itemValue}>{data.createdAt}</Text>
                 </View>
             </View>
-
+            {visibleDialog? <DeleteDialog/> :null}
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={showDialog}>
+                <Text style={styles.buttonTextStyle}>CANCEL</Text>
+            </TouchableOpacity>
 
         </View>
 

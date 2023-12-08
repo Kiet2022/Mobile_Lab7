@@ -1,15 +1,13 @@
 import React from 'react';
 import App_Run from './src/App_Run';
 
-
-
-
-
+import {PaperProvider} from 'react-native-paper';
 
 const App = () => {
   return (
-
-    <App_Run/>
+    <PaperProvider>
+      <App_Run />
+    </PaperProvider>
   );
 };
 

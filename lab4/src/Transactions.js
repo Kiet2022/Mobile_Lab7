@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { useState, useEffect } from 'react'
 import { Text, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
-
+import { FAB } from "react-native-paper";
 import styles from './Style';
 import Loading from './LoadingScreen';
 
@@ -59,7 +59,14 @@ const Transactions_Page = ({ navigation }) => {
             <View style={styles.container_body}>
 
                 <View style={styles.container_body}>
+                <View style={{ flexDirection: 'row', flex: 1 }}>
                     <Text style={styles.subtitle} >TRANSACTIONS</Text>
+                    <FAB
+                        style={styles.fab}
+                        label={'ADD'}
+                        onPress={() => navigation.navigate('AddService')}
+                    />
+                    </View>
                     {isLoading? <Loading/>: 
                     <FlatList
                         data={data}
